@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<employees>
+    <employee id="123">
+        <name>Munson</name>
+        <salary payperiod="weekly">23500</salary>
+        <department>Development
+            <title>Developer</title>
+        </department>
+    </employee>
+    <employee id="124">
+        <name>Brown</name>
+        <salary payperiod="weekly">51000</salary>
+        <department>Human Resources
+            <title>Recruiter</title>
+        </department>
+    </employee>
+    <employee id="125">
+        <name>Philips</name>
+        <salary payperiod="bi-weekly">45000</salary>
+        <department>Development
+            <title>Tester</title>
+        </department>
+    </employee>
+    <employee id="126">
+        <name>Smith</name>
+        <salary payperiod="monthly">72000</salary>
+        <department>User Education
+            <title>Editor</title>
+        </department>
+    </employee>
+</employees>

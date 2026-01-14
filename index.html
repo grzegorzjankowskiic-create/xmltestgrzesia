@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Employees</title>
+        <link rel="stylesheet" href="style.css">
+        <script src="jquery-3.3.1.min.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Emmployees</h1>
+        </header>
+        <text>
+        <script language="javascript" type="text/javascript">
+            $(document).ready(function () {
+                $("#btnGetData").click(function () {
+                    $("#UpdatePanel").html("Please wait...");
+                    $.ajax({
+                        url: "./Employees.xml",
+                        type: "GET",
+                        dataType: "xml",
+                        success: OnSuccess,
+                        error: OnError
+                    });
+                });
+            });
+
+            function OnSuccess(xml) {
+                var tableContent = "<table border='1' cellspacing='0' cellpadding='5'>" +
+                        "<tr>" +
+                        "<th>NAME</th>" +
+                        "<th>SALARY</th>" +
+                        "<th>DEPARTMENT</th>" +
+                        "<th>TITLE</th>" +
+                        "</tr>";
+                $(xml).find('employee').each(function () {
+                    tableContent += "<tr>" +
+                            "<td>" + $(this).find('name').text() + "</td>" +
+                            "<td>" + $(this).find('salary').text() + "</td>" +
+                            "<td>" + $(this).find('department').text() + "</td>" +
+                            "<td>" + $(this).find('title').text() + "</td>" +
+                            "</tr>";
+                });
+                tableContent += "</table>";
+                $("#UpdatePanel").html(tableContent);
+            }
+
+            function OnError(data) {
+                $("#UpdatePanel").html("Error! Please try again.");
+            }
+
+        </script>
+
+        <h3>XML file using Jquery</h3>
+        <input id="btnGetData" type="button" value="Check Emmployees" />
+        <div id="UpdatePanel" style="padding:30px 10px">
+
+        </div>
+        </text>
+        <footer>
+        </footer>
+    </body>
+</html>
