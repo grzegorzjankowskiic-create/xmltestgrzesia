@@ -1,144 +1,31 @@
-<!DOCTYPE html>
-<html lang="pl">
-<head>
-    <meta charset="UTF-8">
-    <title>Baza Restauracji</title>
-    <style>
-        /* Minimalistyczny styl zgodny z wymaganiami */
-        body { font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: left; vertical-align: top;}
-        th { background-color: #f2f2f2; }
-        input[type="text"] { padding: 8px; width: 300px; }
-        button { padding: 8px 15px; cursor: pointer; }
-        .error { color: red; font-weight: bold; }
-    </style>
-</head>
-<body>
-
-    <h1>Lista Restauracji</h1>
-
-    <div>
-        <input type="text" id="searchInput" placeholder="Wpisz nazwę restauracji...">
-        <button id="btnSearch">Szukaj</button>
-        <button id="btnLoadAll">Pokaż wszystkie</button>
-    </div>
-
-    <div id="tableContainer">Ładowanie danych...</div>
-
-    <script>
-        // Zmienna globalna przechowująca załadowany XML
-        let xmlDoc = null;
-
-        // 1. Ładowanie danych przy starcie strony (XMLHttpRequest)
-        window.onload = function() {
-            loadXML();
-        };
-
-        function loadXML() {
-            const xhr = new XMLHttpRequest();
-            xhr.open("GET", "restaurants.xml", true);
-            
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        xmlDoc = xhr.responseXML;
-                        // Wyświetl wszystko na początku (pusty filtr)
-                        renderTable(""); 
-                    } else {
-                        document.getElementById("tableContainer").innerHTML = 
-                            "<p class='error'>Błąd wczytywania pliku XML (Status: " + xhr.status + ")</p>";
-                    }
-                }
-            };
-            xhr.send();
-        }
-
-        // Obsługa przycisków
-        document.getElementById("btnSearch").onclick = function() {
-            let searchText = document.getElementById("searchInput").value;
-            renderTable(searchText);
-        };
-
-        document.getElementById("btnLoadAll").onclick = function() {
-            document.getElementById("searchInput").value = "";
-            renderTable("");
-        };
-
-        // 2. Funkcja wyświetlająca tabelę z użyciem XPath do filtrowania
-        function renderTable(filterText) {
-            if (!xmlDoc) return;
-
-            // Konstrukcja zapytania XPath
-            // Jeśli filterText jest pusty: pobierz wszystkie restauracje
-            // Jeśli filterText jest podany: pobierz restauracje, których nazwa zawiera tekst
-            let xpathExpression = "/restaurants/restaurant";
-            
-            if (filterText !== "") {
-                // XPath contains() sprawdza czy nazwa zawiera frazę
-                xpathExpression = "/restaurants/restaurant[contains(name, '" + filterText + "')]";
-            }
-
-            // Wykonanie XPath
-            let nodes = xmlDoc.evaluate(xpathExpression, xmlDoc, null, XPathResult.ANY_TYPE, null);
-            let resultNode = nodes.iterateNext();
-
-            // Budowanie tabeli HTML (metoda string concatenation - jak u wykładowcy)
-            let tableContent = "<table>" +
-                "<tr>" +
-                    "<th>Nazwa</th>" +
-                    "<th>Adres</th>" +
-                    "<th>Właściciel</th>" +
-                    "<th>Menu</th>" +
-                "</tr>";
-
-            let foundAny = false;
-
-            while (resultNode) {
-                foundAny = true;
-
-                // Pobieranie danych z węzła XML
-                let name = resultNode.getElementsByTagName("name")[0].textContent;
-                let owner = resultNode.getElementsByTagName("owner")[0].textContent;
-
-                // Obsługa adresu (złożona struktura)
-                let addressNode = resultNode.getElementsByTagName("address")[0];
-                let street = addressNode.getElementsByTagName("street")[0].textContent;
-                let city = addressNode.getElementsByTagName("city")[0].textContent;
-                let zip = addressNode.getElementsByTagName("postal-code")[0].textContent;
-                let country = addressNode.getElementsByTagName("country")[0].textContent;
-                let fullAddress = street + ", " + city + " " + zip + " (" + country + ")";
-
-                // Obsługa menu (pętla po pozycjach)
-                let menuItems = resultNode.getElementsByTagName("menu")[0].getElementsByTagName("item");
-                let menuHtml = "<ul>";
-                for (let i = 0; i < menuItems.length; i++) {
-                    let dishName = menuItems[i].getElementsByTagName("name")[0].textContent;
-                    let dishPrice = menuItems[i].getElementsByTagName("price")[0].textContent;
-                    menuHtml += "<li>" + dishName + " - " + dishPrice + " zł</li>";
-                }
-                menuHtml += "</ul>";
-
-                // Dodanie wiersza do tabeli
-                tableContent += "<tr>" +
-                    "<td><b>" + name + "</b></td>" +
-                    "<td>" + fullAddress + "</td>" +
-                    "<td>" + owner + "</td>" +
-                    "<td>" + menuHtml + "</td>" +
-                "</tr>";
-
-                resultNode = nodes.iterateNext();
-            }
-
-            tableContent += "</table>";
-
-            // Wyświetlenie wyniku lub komunikatu o braku danych
-            if (!foundAny) {
-                document.getElementById("tableContainer").innerHTML = "<p>Nie znaleziono restauracji spełniających kryteria.</p>";
-            } else {
-                document.getElementById("tableContainer").innerHTML = tableContent;
-            }
-        }
-    </script>
-</body>
-</html>
+<?xml version="1.0" encoding="UTF-8"?>
+<restaurants>
+    <restaurant>
+        <name>Pizzeria Napoli</name>
+        <address>
+            <street>Ul. Prosta 10</street>
+            <city>Warszawa</city>
+            <postal-code>00-100</postal-code>
+            <country>Polska</country>
+        </address>
+        <owner>Jan Kowalski</owner>
+        <menu>
+            <item><name>Pizza Margherita</name><price>25</price></item>
+            <item><name>Pizza Pepperoni</name><price>32</price></item>
+        </menu>
+    </restaurant>
+    <restaurant>
+        <name>Burger King Kong</name>
+        <address>
+            <street>Rynek Glowny 5</street>
+            <city>Krakow</city>
+            <postal-code>30-001</postal-code>
+            <country>Polska</country>
+        </address>
+        <owner>Anna Nowak</owner>
+        <menu>
+            <item><name>Cheeseburger</name><price>15</price></item>
+            <item><name>Frytki</name><price>8</price></item>
+        </menu>
+    </restaurant>
+</restaurants>
