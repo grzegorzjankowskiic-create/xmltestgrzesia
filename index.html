@@ -4,30 +4,28 @@
     <meta charset="UTF-8">
     <title>Baza Restauracji</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; }
-        th { background-color: #f4f4f4; }
-        input { padding: 8px; width: 300px; }
-        button { padding: 8px 15px; cursor: pointer; }
-        ul { margin: 0; padding-left: 20px; }
+        /* Tylko niezbędne ramki dla tabeli */
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid black; padding: 5px; text-align: left; }
     </style>
 </head>
 <body>
 
-    <h1>Lista Restauracji</h1>
+    <h3>Lista Restauracji</h3>
 
     <div>
-        <input type="text" id="szukaj" placeholder="Wpisz nazwę restauracji...">
+        <input type="text" id="szukaj" placeholder="Nazwa restauracji...">
         <button onclick="filtruj()">Szukaj</button>
         <button onclick="resetuj()">Pokaż wszystkie</button>
     </div>
+    <br>
 
-    <div id="tabela">Ładowanie danych...</div>
+    <div id="tabela">Ładowanie...</div>
 
     <script>
         let xmlDoc = null;
 
+        // Pobranie pliku XML od razu po wejściu na stronę
         window.onload = function() {
             let xhr = new XMLHttpRequest();
             xhr.open("GET", "restaurants.xml", true);
@@ -53,11 +51,13 @@
         function generujTabele(tekst) {
             if (!xmlDoc) return;
 
+            // Ustawienie ścieżki XPath (wszystko lub filtrowanie po nazwie)
             let sciezka = "/restaurants/restaurant";
             if (tekst !== "") {
                 sciezka = "/restaurants/restaurant[contains(name, '" + tekst + "')]";
             }
 
+            // Pobieranie danych z XML
             let wezly = xmlDoc.evaluate(sciezka, xmlDoc, null, XPathResult.ANY_TYPE, null);
             let wezel = wezly.iterateNext();
             
@@ -67,30 +67,33 @@
             while (wezel) {
                 znaleziono = true;
                 
+                // Wyciąganie prostych danych
                 let nazwa = wezel.getElementsByTagName("name")[0].textContent;
                 let wlasciciel = wezel.getElementsByTagName("owner")[0].textContent;
                 
+                // Składanie adresu w jeden ciąg
                 let adr = wezel.getElementsByTagName("address")[0];
                 let adresCalosc = adr.getElementsByTagName("street")[0].textContent + ", " +
                                   adr.getElementsByTagName("city")[0].textContent + " " +
-                                  adr.getElementsByTagName("postal-code")[0].textContent + " (" +
-                                  adr.getElementsByTagName("country")[0].textContent + ")";
+                                  adr.getElementsByTagName("postal-code")[0].textContent;
 
+                // Pętla do tworzenia listy menu
                 let menuHtml = "<ul>";
                 let dania = wezel.getElementsByTagName("item");
                 for (let i = 0; i < dania.length; i++) {
                     menuHtml += "<li>" + dania[i].getElementsByTagName("name")[0].textContent + 
-                                " - " + dania[i].getElementsByTagName("price")[0].textContent + " zł</li>";
+                                " (" + dania[i].getElementsByTagName("price")[0].textContent + " zł)</li>";
                 }
                 menuHtml += "</ul>";
 
-                html += "<tr><td><b>" + nazwa + "</b></td><td>" + adresCalosc + "</td><td>" + wlasciciel + "</td><td>" + menuHtml + "</td></tr>";
+                // Dodanie wiersza do tabeli HTML
+                html += "<tr><td>" + nazwa + "</td><td>" + adresCalosc + "</td><td>" + wlasciciel + "</td><td>" + menuHtml + "</td></tr>";
                 wezel = wezly.iterateNext();
             }
 
             html += "</table>";
 
-            if (!znaleziono) html = "<p>Brak wyników.</p>";
+            if (!znaleziono) html = "Brak wyników.";
             document.getElementById("tabela").innerHTML = html;
         }
     </script>
