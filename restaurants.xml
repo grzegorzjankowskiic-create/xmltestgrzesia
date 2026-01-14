@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<restaurants>
+    <restaurant>
+        <name>Pizzeria Napoli</name>
+        <address>
+            <street>Ul. Prosta 10</street>
+            <city>Warszawa</city>
+            <postal-code>00-100</postal-code>
+            <country>Polska</country>
+        </address>
+        <owner>Jan Kowalski</owner>
+        <menu>
+            <item>
+                <name>Pizza Margherita</name>
+                <price>25.00</price>
+            </item>
+            <item>
+                <name>Pizza Pepperoni</name>
+                <price>32.00</price>
+            </item>
+        </menu>
+    </restaurant>
+    <restaurant>
+        <name>Burger King Kong</name>
+        <address>
+            <street>Rynek Glowny 5</street>
+            <city>Krakow</city>
+            <postal-code>30-001</postal-code>
+            <country>Polska</country>
+        </address>
+        <owner>Anna Nowak</owner>
+        <menu>
+            <item>
+                <name>Cheeseburger</name>
+                <price>15.50</price>
+            </item>
+            <item>
+                <name>Frytki</name>
+                <price>8.00</price>
+            </item>
+        </menu>
+    </restaurant>
+    <restaurant>
+        <name>Sushi Master</name>
+        <address>
+            <street>Morska 2</street>
+            <city>Gdansk</city>
+            <postal-code>80-002</postal-code>
+            <country>Polska</country>
+        </address>
+        <owner>Tomasz Wiśniewski</owner>
+        <menu>
+            <item>
+                <name>Zestaw California</name>
+                <price>45.00</price>
+            </item>
+            <item>
+                <name>Zupa Miso</name>
+                <price>12.00</price>
+            </item>
+        </menu>
+    </restaurant>
+</restaurants>
